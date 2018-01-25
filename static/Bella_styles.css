@@ -1,0 +1,18 @@
+#spinning {
+    display: none; /* Hide this DIV to start. Click to show. */
+
+    margin:auto; /* Centers the box */
+    width: 228px;
+    height: 200px;
+/*
+    border: 2px solid;
+    border-color: brown;
+    border-radius: 20px;
+*/
+    text-align: center;
+    cursor: wait;
+}
+
+#citation_result {
+    font-size: x-large;
+}
