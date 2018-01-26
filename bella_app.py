@@ -54,7 +54,7 @@ def from_chrome():
 
     # Gracefully handle blank search.
     if lookup_ID == '':
-        comments.append("I didn't get the article ID to search for.")
+        comments.append("I didn't get an article ID to search for.")
         return redirect(url_for('index'))
 
     # Validate ID. If PMID, confirm it exists. If DOI, convert to PMID.

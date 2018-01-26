@@ -20,11 +20,14 @@ def format_journal(record, comments):
     #  - from: The New England journal of medicine
     #  - to: New England Journal of Medicine
 
-    journal_map = pd.read_excel('format_citation\Journal_names_map.xlsx').drop_duplicates()
-    match = journal_map.ix[journal_map['PubMed_name'] == journal]['HW_style']
-    if not match.isnull().all():
-        journal = match.head(1).values[0]
-    else:
-        journal = titlecase(journal)
+    ## COMMENTING OUT
+    # journal_map = pd.read_excel('format_citation\Journal_names_map.xlsx').drop_duplicates()
+    # match = journal_map.ix[journal_map['PubMed_name'] == journal]['HW_style']
+    # if not match.isnull().all():
+    #     journal = match.head(1).values[0]
+    # else:
+    #     journal = titlecase(journal)
+
+    journal = titlecase(journal)
 
     return journal, comments

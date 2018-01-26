@@ -1,4 +1,4 @@
-from Bio import Entrez
+import Entrez
 import re
 from datetime import date
 import datetime
@@ -17,10 +17,10 @@ def PMID_to_HW_citation(PMID, comments):
         handle = Entrez.esummary(db="pubmed", id=PMID)
         record = Entrez.read(handle)[0]
     except IOError:
-        comments.append("Bark: I can't get to PubMed.gov. Is it a network problem? I'm leashed!") # Network error
+        comments.append("Network problem?") # Network error
         return '', comments
     except:
-        comments.append("Bark: Error fetching that article.") # Bad PMID?
+        comments.append("Error fetching that article.") # Bad PMID?
         return '', comments
 
     author_names = authors.format_authors(record)
@@ -28,7 +28,7 @@ def PMID_to_HW_citation(PMID, comments):
     try:
         year = record['PubDate'][0:4]
     except:
-        comments.append("Bark: What year is it?")
+        comments.append("What year is it?")
         year = '20??'
 
     title = article_title.format_title(record)
@@ -81,13 +81,14 @@ def validate_and_convert_DOI_or_PMID_to_PMID(lookupID, comments):
         record = Entrez.read(handle)
         handle.close()
         if int(record['Count']) == 0:
-            comments.append("Bark: I can't find it.")
+            comments.append("I can't find the article. Record count = 0")
             return '', comments
         elif int(record['Count']) > 1:
-            comments.append('Bark: I got more than one article. I can only fit one in my mouth at a time, woof.')
+            comments.append('I got more than one article. I can only fit one in my mouth at a time, woof.')
             return '', comments
         else:  # Only 1 result, perfect!
             return (record['IdList'][0]), comments
     except:
-        comments.append("Bark: I can't find it.")
+        comments.append("I'm having trouble. Please report this error: Exception at Entrez lookup.")
+        comments.append(lookupID)
         return '', comments

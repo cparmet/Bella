@@ -1,4 +1,3 @@
-from Bio import Entrez
 from titlecase import titlecase
 import re
 import pandas as pd
