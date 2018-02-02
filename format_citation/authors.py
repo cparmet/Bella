@@ -22,7 +22,6 @@ def format_authors(record):
             '.')  # First and second authors. Strip any trailing period.
 
     if num_authors > 2:
-        authors = authors + ', ' + record['AuthorList'][1].rstrip(
-            '.') + ', et al.'  # First, second,  et al. Strip any trailing periods
+        authors = authors + ', et al.'  # First author, et al.
 
     return authors
