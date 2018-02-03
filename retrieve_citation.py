@@ -2,7 +2,7 @@ import Entrez
 import re
 from datetime import date
 import datetime
-from format_citation import article_title, authors, DOI, errata, journal_name, page_numbers, volume_issue
+from format_citation import article_title, authors, DOI, errata, journal_name, page_numbers, volume_issue, accessed_date
 
 
 def PMID_to_HW_citation(PMID, comments):
@@ -36,8 +36,7 @@ def PMID_to_HW_citation(PMID, comments):
     vol_iss, comments = volume_issue.format_volume_issue(record, comments)
     pages, comments = page_numbers.format_pages(record, comments)
     DOI_value, comments = DOI.format_DOI(record, comments)
-    # The hashtag in "%#d" strips leading 0s, so day 01 formats as 1. Thanks, StackOverflow.
-    accessed = 'Accessed ' + '{:%B %#d, %Y}'.format(date.today()) + '.'
+    accessed = accessed_date.accessed_today_mountain_time()
 
     # When there's no author: Title (Year)...
     if author_names == '':
