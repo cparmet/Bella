@@ -20,18 +20,20 @@ def format_journal(record, comments):
 
     ## NOTES:
     # 1. XLSX is a public AWS S3 file.
-    # 2. This XLSX also makes this HW-specific style change:
+    # 2. This XLSX also makes HW-specific style changes, such as:
     #  - from: The New England journal of medicine
     #  - to: New England Journal of Medicine
 
     xls_url = 'https://s3.amazonaws.com/bella_zappa_S3bucket/static/Journal_names_map.xlsx'
     journal_map = pd.read_excel(xls_url).drop_duplicates()
-    match = journal_map.ix[journal_map['PubMed_name'] == journal]['HW_style']
+    # Lowercase everything
+    journal_map['PubMed_name'] = journal_map['PubMed_name'].apply(str.lower)
+
+    # Check if the lowercase version of Journal matches anything in the journal_map dataframe
+    match = journal_map.ix[journal_map['PubMed_name'] == journal.lower()]['HW_style']
     if not match.isnull().all():
         journal = match.head(1).values[0]
     else:
         journal = titlecase(journal)
-
-    journal = titlecase(journal)
 
     return journal, comments
