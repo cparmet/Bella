@@ -4,7 +4,6 @@ import retrieve_citation as rc
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
-
 comments = []
 citation = ""
 
