@@ -13,15 +13,25 @@ def format_authors(record):
 
     if num_authors == 0:
         authors = ''
+        return authors
 
-    if num_authors > 0:
-        authors = record['AuthorList'][0].rstrip('.')  # First author only. Strip any trailing period, e.g., 22187473
+    # Cases that get this far have at least 1 author.
 
+    # Fix author names that are all uppercase, like 28827379: COMMITTEE ON ADOLESCENCE
+    author_list = record['AuthorList']
+    for i, author in enumerate(author_list):
+        if author.isupper():
+            author_list[i] = titlecase(author)
+
+    # Grab the first author
+    authors = author_list[0].rstrip('.')  # Strip any trailing period, e.g., 22187473
+
+    # Two authors: add the second author, so it formats "First author, second author."
     if num_authors == 2:
-        authors = authors + ', ' + record['AuthorList'][1].rstrip(
-            '.')  # First and second authors. Strip any trailing period.
+        authors = authors + ', ' + author_list[1].rstrip('.')  # Strip any trailing period.
 
+    # Three or more authors: "First author, et al"
     if num_authors > 2:
-        authors = authors + ', et al.'  # First author, et al.
+        authors = authors + ', et al.'
 
     return authors
