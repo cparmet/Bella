@@ -3,7 +3,7 @@ import re
 from datetime import date
 import datetime
 from format_citation import article_title, authors, DOI, errata, journal_name, page_numbers, volume_issue, accessed_date
-
+from flask import current_app as app
 
 def PMID_to_HW_citation(PMID, comments):
     """
@@ -11,7 +11,7 @@ def PMID_to_HW_citation(PMID, comments):
     :param PMID: PubMed ID
     :return:
     """
-    Entrez.email = 'cparmet@healthwise.org'
+    Entrez.email = app.config['EMAIL']
 
     try:
         handle = Entrez.esummary(db="pubmed", id=PMID)
@@ -75,7 +75,7 @@ def validate_and_convert_DOI_or_PMID_to_PMID(lookupID, comments):
     lookupID = lookupID.replace(" ", "")
 
     try:
-        Entrez.email = "cparmet@healthwise.org"
+        Entrez.email = app.config['EMAIL']
         handle = Entrez.esearch(db="pubmed", retmax=10, term=lookupID)
         record = Entrez.read(handle)
         handle.close()

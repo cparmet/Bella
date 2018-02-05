@@ -2,7 +2,7 @@ from flask import Flask, redirect, render_template, request, url_for
 import retrieve_citation as rc
 
 app = Flask(__name__)
-app.config["DEBUG"] = True
+app.config.from_pyfile('config_file.cfg')
 
 comments = []
 citation = ""

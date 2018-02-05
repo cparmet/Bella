@@ -1,4 +1,5 @@
 import Entrez
+from flask import current_app as app
 
 def erratum_check(PMID, comments):
     """ Does this PMID have an erratum?
@@ -6,7 +7,7 @@ def erratum_check(PMID, comments):
     But I can warn user that there is an erratum.
     """
 
-    Entrez.email = 'cparmet@healthwise.org'
+    Entrez.email = app.config['EMAIL']
     handle = Entrez.efetch(db="pubmed", id=PMID, rettype="gb", retmode="xml")
     records = Entrez.read(handle)
 
