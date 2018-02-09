@@ -1,6 +1,7 @@
 import pandas as pd
 from titlecase import titlecase
 
+
 def format_journal(record, comments):
     try:
         journal = record['FullJournalName']
@@ -20,9 +21,6 @@ def format_journal(record, comments):
 
     ## NOTES:
     # 1. XLSX is a public AWS S3 file.
-    # 2. This XLSX also makes HW-specific style changes, such as:
-    #  - from: The New England journal of medicine
-    #  - to: New England Journal of Medicine
 
     xls_url = 'https://s3.amazonaws.com/bella_zappa_S3bucket/static/Journal_names_map.xlsx'
     journal_map = pd.read_excel(xls_url).drop_duplicates()
@@ -34,6 +32,41 @@ def format_journal(record, comments):
     if not match.isnull().all():
         journal = match.head(1).values[0]
     else:
+        # Replace ampersand with and
+        journal = journal.replace(' & ', ' and ')  # Field & Stream -> Field and Stream
+        journal = journal.replace(' &', ' and ')  # Field &Stream -> Field and Stream
+        journal = journal.replace('& ', ' and ')  # Field& Stream -> Field and Stream
+        journal = journal.replace('&', ' and ')  # Field&Stream -> Field and Stream
+
+        # If first word is 'The_', drop it
+        if journal[0:4] == 'The ':
+            journal = journal[4:]
+
+        # Title Case it
+        # This function will not capitalize "small words" from New York Times Manual of Style
         journal = titlecase(journal)
 
+        # A post-Titlecase fix: it capitalizes "nor", "off", "out", "up", but HW style is to not.
+        # But cannot imagine a journal title with "nor" in the name!!
+        journal = journal.replace(' Nor ', ' nor ')
+        journal = journal.replace(' Nor,', ' nor,')
+        journal = journal.replace(', Nor ', ', nor ')
+        journal = journal.replace(',Nor ', ', nor ')
+
+        journal = journal.replace(' Off ', ' off ')
+        journal = journal.replace(' Off,', ' off,')
+        journal = journal.replace(', Off ', ', off ')
+        journal = journal.replace(',Off ', ', off ')
+
+        journal = journal.replace(' Out ', ' out ')
+        journal = journal.replace(' Out,', ' out,')
+        journal = journal.replace(', Out ', ', out ')
+        journal = journal.replace(',Out ', ', out ')
+
+        journal = journal.replace(' Up ', ' up ')
+        journal = journal.replace(' Up,', ' up,')
+        journal = journal.replace(', Up ', ', up ')
+        journal = journal.replace(',Up ', ', up ')
+
     return journal, comments
+
