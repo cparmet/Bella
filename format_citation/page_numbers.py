@@ -3,6 +3,8 @@
 # - If there is at least one page number, these functions add : before it.
 # - u2013 is an enDash.
 
+import re
+
 def make_stop_a_full_number(start, stop):
     # Page numbers are in style AAAA - B.
     # I need to convert to AAAA - BBBB.
@@ -146,7 +148,16 @@ def format_pages(record, comments):
 
     except:
         if pages_old == '':  # No pages?
-            pages_new = ''
+            # Does it have a pii, like recent Pediatrics articles e.g., 28827377
+            # pii be stored here: 'ELocationID': 'pii: e20171904. doi: 10.1542/peds.2017-1904
+            EL_ID = record['ELocationID']
+            # Find the first word after "pii: "
+            pattern = re.compile(r"(?<=\bpii:\s)(\w+)")
+            pii = pattern.search(EL_ID).group()
+            if pii != None: # We have a pii! Return it.
+                pages_new = ': ' + pii
+            else: # We don't have a pii. Return empty page.
+                pages_new = ''
         else:  # Treat it as one page.
             pages_new = ': ' + pages_old
 
