@@ -26,6 +26,11 @@ def format_authors(record):
     # Grab the first author
     authors = author_list[0].rstrip('.')  # Strip any trailing period, e.g., 22187473
 
+    # If first author begins with a lowercase word, initial-cap it per HW style, e.g., van der Poll -> Van der Poll (29279614)
+    authors = list(authors)
+    authors[0] = authors[0].upper()
+    authors = ''.join(authors)
+
     # Two authors: add the second author, so it formats "First author, second author."
     if num_authors == 2:
         authors = authors + ', ' + author_list[1].rstrip('.')  # Strip any trailing period.
