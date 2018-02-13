@@ -17,10 +17,10 @@ def PMID_to_HW_citation(PMID, comments):
         handle = Entrez.esummary(db="pubmed", id=PMID)
         record = Entrez.read(handle)[0]
     except IOError:
-        comments.append("Network problem?") # Network error
+        comments.append("Is there a network problem? Unleash me please!") # Network error
         return '', comments
     except:
-        comments.append("Error fetching that article.") # Bad PMID?
+        comments.append("I can't fetch an article with that ID. :( Can you double check it?") # Bad PMID?
         return '', comments
 
     author_names = authors.format_authors(record)
@@ -80,14 +80,16 @@ def validate_and_convert_DOI_or_PMID_to_PMID(lookupID, comments):
         record = Entrez.read(handle)
         handle.close()
         if int(record['Count']) == 0:
-            comments.append("I can't find the article. Record count = 0")
+            comments.append("I can't find an article with that ID. Can you double check it?")
             return '', comments
         elif int(record['Count']) > 1:
-            comments.append('I got more than one article. I can only fit one in my mouth at a time, woof.')
+            comments.append('I found more than one article. Are there characters missing from the ID?')
             return '', comments
         else:  # Only 1 result, perfect!
             return (record['IdList'][0]), comments
+    except IOError: # Network error
+        comments.append("Is there a network problem? Unleash me please!") # Network error
+        return '', comments
     except:
-        comments.append("I'm having trouble. Please report this error: Exception at Entrez lookup.")
-        comments.append(lookupID)
+        comments.append("I can't fetch an article with ID " + lookupID + '. Can you double check it?')  # Bad PMID?
         return '', comments

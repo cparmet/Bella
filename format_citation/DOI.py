@@ -8,10 +8,10 @@ def format_DOI(record, comments):
     # Key error: No DOI data.
     except:
         DOI = ''
-        comments.append("I couldn't find a DOI. Please use Available at: journal URL.")
+        comments.append("I couldn't find a DOI. Please add the URL of the article.")
 
     # And what if DOI key did pull a result, but it was blank? Not sure this will happen, but in case it does...
     if DOI == 'DOI: ':
-        comments.append("I couldn't find a DOI. Please use Available at: journal URL.")
+        comments.append("I couldn't find a DOI. Please add the URL of the article.")
 
     return DOI, comments

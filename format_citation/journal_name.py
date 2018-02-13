@@ -7,7 +7,7 @@ def format_journal(record, comments):
         journal = record['FullJournalName']
     except:
         journal = ''
-        comments.append("I couldn't find the journal name.")
+        comments.append("I couldn't find the name of the journal.")
 
     # Format select journal names.
 

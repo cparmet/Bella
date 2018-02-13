@@ -138,7 +138,7 @@ def format_pages(record, comments):
 
                 # Not a style I can do anything with.
 
-                comments.append('Please double check how I numbered the pages. Woof.')
+                comments.append('Please double check how I numbered the pages.')
                 pages_new = ': ' + pages_old
 
             except:

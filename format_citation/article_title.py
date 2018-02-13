@@ -29,7 +29,7 @@ def format_title(record):
         title = record['Title']
     except:
         title = ''
-        print("Bark: I couldn't find the title of the article.")
+        print("I couldn't find a title for this article.")
 
     # Strip out funny html tags from the Pubmed title e.g., see PMID 29266283
     funny_tags = ['<sup>', '</sup>', '<sub>', '</sub>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>']

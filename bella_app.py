@@ -27,7 +27,7 @@ def index():
 
         # Gracefully handle blank search.
         if lookup_ID =='':
-            comments.append("Please enter an ID.")
+            comments.append("Please enter an ID for me to search for.")
             return redirect(url_for('index'))
 
         # Validate ID. If PMID, confirm it exists. If DOI, convert to PMID.

@@ -17,7 +17,7 @@ def erratum_check(PMID, comments):
         for correction in corrections:
             if correction.attributes['RefType'] == 'ErratumIn':
                 if erratum_count == 0:
-                    comments.append("I smell an erratum, but I can't fetch it.: " + correction['RefSource'] +
+                    comments.append("I smell an erratum: " + correction['RefSource'] +
                           ". \nAdd it to the end of your citation: [Erratum in Journal, Issue(Volume): page. DOI: #. Accessed date.]")
                 else:  # Is this the second (or later) erratum we're reporting for this article? Then shorten report.
                     comments.append("There's another erratum! What a mess." + correction['RefSource'])
