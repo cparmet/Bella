@@ -36,7 +36,7 @@ def PMID_to_HW_citation(PMID, comments):
     vol_iss, comments = volume_issue.format_volume_issue(record, comments)
     pages, comments = page_numbers.format_pages(record, comments)
     DOI_value, comments = DOI.format_DOI(record, comments)
-    accessed = accessed_date.accessed_today_mountain_time()
+    accessed = accessed_date.format_accessed_date()
 
     # When there's no author: Title (Year)...
     if author_names == '':
