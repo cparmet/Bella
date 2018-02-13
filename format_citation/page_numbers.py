@@ -153,10 +153,10 @@ def format_pages(record, comments):
             EL_ID = record['ELocationID']
             # Find the first word after "pii: "
             pattern = re.compile(r"(?<=\bpii:\s)(\w+)")
-            pii = pattern.search(EL_ID).group()
-            if pii != None: # We have a pii! Return it.
-                pages_new = ': ' + pii
-            else: # We don't have a pii. Return empty page.
+            try:
+                pii = pattern.search(EL_ID).group()
+                pages_new = ': ' + pii # We have a pii! Return it.
+            except: # We don't have a pii. Return empty page.
                 pages_new = ''
         else:  # Treat it as one page.
             pages_new = ': ' + pages_old
