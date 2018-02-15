@@ -39,7 +39,7 @@ def probe_and_process_pages_with_leading_letters(start, stop, comments):
     letter = start[0]
 
     if letter == 's':
-        letter = letter.upper()  # capitalize S only, per HW citation rules for supplements.
+        letter = letter.upper()  # capitalize S only, per citation rules for supplements.
 
     start = start[1:]  # Extract everything after the leading letter.
 
@@ -79,7 +79,7 @@ def probe_and_process_pages_with_leading_letters(start, stop, comments):
         #  * And start & stop are both integers at this point.
 
         if (start - stop) > 0:  # By my hypothesis, this means it's styles [1] or [3]
-            # Convert stop to full number, HW style.
+            # Convert stop to full number, per style guide.
             stop = make_stop_a_full_number(start, stop)
 
         # Else: It's style [2] or [4]. Stop is already a full number.
@@ -116,7 +116,7 @@ def format_pages(record, comments):
             # My hypothesis: If we need to convert, AAAA minus B will be positive. Because AAAA>B.
 
             if (start - stop) > 0:
-                # Convert stop to HW style:
+                # Format stop
                 stop = make_stop_a_full_number(start, stop)
                 pages_new = ': ' + str(start) + u'\u2013' + str(stop)
 

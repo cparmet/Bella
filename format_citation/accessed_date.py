@@ -3,7 +3,7 @@
 # from pytz import timezone
 
 def format_accessed_date():
-    return 'Accessed __[fill in date PDF downloaded]__.'
+    return 'Accessed __[fill in date that PDF was downloaded]__.'
 
 
 ## Old function:

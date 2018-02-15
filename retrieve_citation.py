@@ -5,9 +5,9 @@ import datetime
 from format_citation import article_title, authors, DOI, errata, journal_name, page_numbers, volume_issue, accessed_date
 from flask import current_app as app
 
-def PMID_to_HW_citation(PMID, comments):
+def PMID_to_formatted_citation(PMID, comments):
     """
-    Take a PMID, retrieve the PubMed data, and convert it to a Healthwise formatted citation.
+    Take a PMID, retrieve the PubMed data, and format it based on our style guide.
     :param PMID: PubMed ID
     :return:
     """

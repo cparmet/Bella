@@ -25,6 +25,8 @@ def index():
 
         lookup_ID = request.form["lookup_ID"]
 
+        ### Reminder: If we revise code below, update /chrome route code below ###
+
         # Gracefully handle blank search.
         if lookup_ID =='':
             comments.append("Please enter an ID for me to search for.")
@@ -35,7 +37,7 @@ def index():
 
         # If PMID exists, fetch citation.
         if PMID_result != '':
-            citation, comments = rc.PMID_to_HW_citation(PMID_result, comments)
+            citation, comments = rc.PMID_to_formatted_citation(PMID_result, comments)
         else:
             citation = ""
 
@@ -50,6 +52,7 @@ def from_chrome():
     global citation
 
     ## REST OF THIS ROUTE'S CODE IS SAME AS POST ABOVE
+    ### Reminder: If we revise code below, update "/" route code above ###
 
     # Gracefully handle blank search.
     if lookup_ID == '':
@@ -61,7 +64,7 @@ def from_chrome():
 
     # If PMID exists, fetch citation.
     if PMID_result != '':
-        citation, comments = rc.PMID_to_HW_citation(PMID_result, comments)
+        citation, comments = rc.PMID_to_formatted_citation(PMID_result, comments)
     else:
         citation = ""
 
