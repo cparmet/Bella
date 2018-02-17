@@ -25,7 +25,7 @@ def format_journal(record, comments):
     xls_url = 'https://s3.amazonaws.com/bella_zappa_S3bucket/static/Journal_names_map.xlsx'
     journal_map = pd.read_excel(xls_url).drop_duplicates()
     # Lowercase everything
-    journal_map[' _title'] = journal_map['PubMed_title'].apply(str.lower)
+    journal_map['PubMed_title'] = journal_map['PubMed_title'].apply(str.lower)
 
     # Check if the lowercase version of Journal matches anything in the journal_map dataframe
     match = journal_map.ix[journal_map['PubMed_title'] == journal.lower()]['Formatted_title']
