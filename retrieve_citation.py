@@ -20,7 +20,8 @@ def PMID_to_formatted_citation(PMID, comments):
         comments.append("Is there a network problem? Unleash me please!") # Network error
         return '', comments
     except:
-        comments.append("I can't fetch an article with that ID. :( Can you double check it?") # Bad PMID?
+        comments.append("I can't fetch an article with that ID.") # DOI not on PubMed? Or Bad PMID?
+        comments.append("Try looking up the article on www.pubmed.gov. (Note: PubMed may not have the DOI.) If the article is there, copy its PMID and bring it to me. If the article isn't on PubMed, I can't fetch a citation for you. Sorry. :( ")
         return '', comments
 
     author_names = authors.format_authors(record)
@@ -80,7 +81,8 @@ def validate_and_convert_DOI_or_PMID_to_PMID(lookupID, comments):
         record = Entrez.read(handle)
         handle.close()
         if int(record['Count']) == 0:
-            comments.append("I can't find an article with that ID. Can you double check it?")
+            comments.append("I can't fetch an article with that ID.")  # DOI not on PubMed? Or Bad PMID?
+            comments.append("Try looking up the article on www.pubmed.gov. (Note: PubMed may not have the DOI.) If the article is there, copy its PMID and bring it to me. If the article isn't on PubMed, I can't fetch a citation for you. Sorry. :( ")
             return '', comments
         elif int(record['Count']) > 1:
             comments.append('I found more than one article. Are there characters missing from the ID?')
@@ -92,4 +94,5 @@ def validate_and_convert_DOI_or_PMID_to_PMID(lookupID, comments):
         return '', comments
     except:
         comments.append("I can't fetch an article with ID " + lookupID + '. Can you double check it?')  # Bad PMID?
+        comments.append("Try looking up the article on www.pubmed.gov. (Note: PubMed may not have the DOI.) If the article is there, copy its PMID and bring it to me. If the article isn't on PubMed, I can't fetch a citation for you. Sorry. :( ")
         return '', comments
