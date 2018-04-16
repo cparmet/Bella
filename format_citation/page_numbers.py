@@ -1,7 +1,7 @@
 # PAGE NUMBERS
 # Notes:
 # - If there is at least one page number, these functions add : before it.
-# - u2013 is an enDash.
+# - enDash: u'\u2013'; Backup: use html code '&ndash;'
 
 import re
 
@@ -63,7 +63,7 @@ def probe_and_process_pages_with_leading_letters(start, stop, comments):
                     # Second number begins with same letter, but it also has another non-integer character in there.
                     # I can't handle those situations (can't do the start - stop subtraction).
                     # But I'll add the letter back to start, and convert the dash to an endash.
-                    pages_new = ': ' + letter + start + u'\2013' + stop
+                    pages_new = ': ' + letter + start + u'\u2013' + stop
                     return pages_new, comments
             else:
                 # Second page isn't an integer AND doesn't begin with an S.
@@ -71,7 +71,7 @@ def probe_and_process_pages_with_leading_letters(start, stop, comments):
                 # But I know first page is S### (no other letters).
                 # So I feel safe -- will test this to confirm -- adding S before second page.
                 # And will convert dash to endash
-                pages_new = ': ' + letter + start + u'\2013' + letter + stop
+                pages_new = ': ' + letter + start + u'\u2013' + letter + stop
                 return pages_new, comments
 
         # Ok, if we're still here:
@@ -123,7 +123,7 @@ def format_pages(record, comments):
             # If it's already formatted correctly, AAAA minus BBBB will be negative.
             # Also, if the difference is 0, I can't imagine why, but let's handle it gracefully.
             elif (start - stop) <= 0:
-                pages_new = ': ' + pages_old
+                pages_new = ': ' + str(start) + u'\u2013' + str(stop)
 
         except:
             # There are two pages, but they're not integers
