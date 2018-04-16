@@ -1,4 +1,5 @@
 import re
+import sentence_caser as sc
 
 def capitalize_words_after_colons(title):
     ''' For every colon, capitalize the first word after the colon.
@@ -24,12 +25,12 @@ def capitalize_words_after_colons(title):
 
     return title
 
-def format_title(record):
+def format_title(record, PMID, comments):
     try:
         title = record['Title']
     except:
         title = ''
-        print("I couldn't find a title for this article.")
+        comments.append("I couldn't find a title for this article.")
 
     # Strip out funny html tags from the Pubmed title e.g., see PMID 29266283
     funny_tags = ['<sup>', '</sup>', '<sub>', '</sub>', '<b>', '</b>', '<i>', '</i>', '<u>', '</u>']
@@ -41,7 +42,8 @@ def format_title(record):
     if (title[0] == '[') and (title[-2] == ']'):
         title = title[1:-2] + '.'
 
-    # Capitalize first words after colons.
+    title, comments = sc.sentence_caser(PMID, title, detect_threshold=0.2, caser_threshold=0.8, comments, debug=False)
+
     title = capitalize_words_after_colons(title)
 
-    return title
+    return title, comments

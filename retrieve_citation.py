@@ -32,7 +32,7 @@ def PMID_to_formatted_citation(PMID, comments):
         comments.append("What year is it?")
         year = '20??'
 
-    title = article_title.format_title(record)
+    title, comments = article_title.format_title(record, PMID, comments)
     journal, comments = journal_name.format_journal(record, comments)
     vol_iss, comments = volume_issue.format_volume_issue(record, comments)
     pages, comments = page_numbers.format_pages(record, comments)
