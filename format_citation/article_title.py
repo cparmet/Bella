@@ -1,5 +1,5 @@
 import re
-import sentence_caser as sc
+from format_citation import sentence_caser as sc
 
 def capitalize_words_after_colons(title):
     ''' For every colon, capitalize the first word after the colon.

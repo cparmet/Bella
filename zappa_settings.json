@@ -1,5 +1,8 @@
 {
     "production": {
+	"aws_environment_variables": {
+	"NLTK_DATA": "./nltk_data"
+	},
         "app_function": "bella_app.app",
         "aws_region": "us-east-1",
         "profile_name": "default",

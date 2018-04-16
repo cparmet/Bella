@@ -336,26 +336,120 @@ def capitalize_words_of_new_sentences(title):
         title = "".join(title)
     return title
 
-# For cases when I don't have an abstract
-def simple_sentence_case(title):
+def simple_sentence_case_OLD(title):
     title_sc = title.capitalize()
     title_sc = capitalize_words_of_new_sentences(title_sc)
 
     ## V4D: scan for terms in my word lists of medical societies, places, pathogens, and diseases
     # that should ALWAYS be capitalized.
     title_sc = check_word_list(title_sc)
-    return title
+    return title_sc
+
+def simple_sentence_case(title, debug=False):
+    ''' For cases when I don't have an abstract.
+
+    Adapted from full Title_case_to_sentence_case, except doesn't use an abstract. Still handles uppercase terms like FDA, word list, hyphenated words, etc.
+
+    '''
+    ############
+    ## Pre-process title
+    ############
+
+    # V3: Add dummies with spacers where hyphens are.
+    # That way tokenizer will separate parts of the hyphen into their own words.
+    pattern = r'\b-\b'  # a hyphen inside a word. Also works for words with >1 hyphen. Backup: r'.-.'
+    title = re.sub(pattern, ' *****-***** ', str(title))
+    if debug: print('Dehyphenated: ', title)
+
+    # Tokenize title into words and symbols
+    title_tc = nltk.word_tokenize(title)
+    # V2: Clean up quotation marks. the word_tokenize function mutates "" into `` or '' [29418122]
+    # See bottom of function for a related fix to quotation marks.
+    # We'll see over time if this screws up any titles that we don't want it to, as well.
+    title_tc = [word.replace("``", '"') for word in title_tc]
+
+    # Create a lowercase version of title-case title. This is our baseline.
+    # We'll replace with original words from TC as needed
+    title_lower = [w.lower() for w in title_tc]
+
+    ## Walk through words in the Title
+    ############
+    # For every word in the Title
+    # (skipping first word, which will be initial capped no matter what).
+    for i in range(1, len(title_tc)):
+        title_word = title_tc[i]
+
+        #####
+        # Skip non-informative words
+        #####
+
+        # Is the word from title ALL caps? Ignore it.
+        if title_word.isupper():
+            title_lower[i] = title_word
+            if debug: print('CAPS: ', title_word)
+            continue
+
+        # V2: Is the word from title in CaMel CaSe? Skip it
+        # My logic: since we've ruled out all caps words, a camel case word here
+        # remaining at this point would be a word with 1+ uppercase letter AFTER
+        # the first letter [1:], because word could be initial capped.
+        if sum([letter.isupper() for letter in title_word[1:]]) != 0:
+            title_lower[i] = title_word
+            if debug: print('Camel: ', title_word)
+            continue
+
+            # V2: Does the word have a number or symbol in it? Includes punctuation marks, " 's " tokens, gene/mutation names, etc.
+        # V3: Remove special handling of hyphenated words, which should be split into words now
+
+        if not title_word.isalpha():
+            title_lower[i] = title_word
+            if debug: print('Not alpha: ', title_word)
+            continue
+
+    #################
+    ## Postprocessing
+    #################
+
+    # Return first word to original case. Could be all caps, who knows.
+    title_lower[0] = title_tc[0]
+
+    # Convert tokenized sentence to string.
+    # Use Moses Detokenizer instead of " ".join(title_lower) to handle spacing around punctuation.
+    detokenizer = MosesDetokenizer()
+    if debug: print('Before detokenizer: ', title_lower)
+    title_sc = detokenizer.detokenize(title_lower, return_str=True)
+
+    ## V3: Put hyphens back in where the dummies are
+    title_sc = title_sc.replace(' *****-***** ', '-')
+    if debug: print('Rehyphenated: ', title_sc)
+
+    ## V2: Clean up
+    # (a) Sometimes the Moses Detokenizer leaves "( words)". Fix it to "(words)"
+    if title.find("( ") == -1:  # If that (_ pattern DOESN'T appear in the original title, it's an artifact, it's not on purpose
+        title_sc = title_sc.replace("( ", "(")  # So get rid of any instances in the converted title.
+
+    # (b) Sometimes the original tokenizer changes " to #'': an extra space with a . [29418122]
+    # Check: Is that #'' pattern found in my converted version (with extra space)
+    #  and there WASN'T a #'' in the original title (before it got tokenized)? Maybe '' was deliberate.
+    if (title_sc.find(" ''") != -1) and (title.find(" ''") == -1):
+        title_sc = title_sc.replace(" ''", '"')
+
+    ## V4D: scan for terms in my word lists of medical societies, places, pathogens, and diseases
+    # that should ALWAYS be capitalized.
+    title_sc = check_word_list(title_sc)
+
+    return title_sc
 
 def sentence_caser(PMID, title, comments, detect_threshold = 0.2, caser_threshold = 0.8, debug = False):
     # If it's all uppercase, like 28487907, covert to basic capitalize
     if title.isupper():
         if debug: print('All upper case detected.')
         title_sc = simple_sentence_case(title)
-        comments.append("I've tried to convert the title from Title Case to Sentence case. Please double check me!")
-        comments.append("Original title:" + title)
+        comments.append("I've tried to convert the title from UPPER CASE to Sentence case. Please double check me!")
+        comments.append("Original title: " + title)
 
     # Is this in sentence case?
-    if is_sentence_case(title) >= detect_threshold:
+    if is_sentence_case(title) <= detect_threshold:
         # Nope, TC. Convert
         if debug: print('Title case detected.')
         # Try to get an abstract.
@@ -372,7 +466,7 @@ def sentence_caser(PMID, title, comments, detect_threshold = 0.2, caser_threshol
             title_sc = simple_sentence_case(title)
 
         comments.append("I've tried to convert the title from Title Case to Sentence case. Please double check me!")
-        comments.append("Original title:" + title)
+        comments.append("Original title: " + title)
 
     else:
         # Already in sentence case.
