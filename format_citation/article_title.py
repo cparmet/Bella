@@ -42,7 +42,7 @@ def format_title(record, PMID, comments):
     if (title[0] == '[') and (title[-2] == ']'):
         title = title[1:-2] + '.'
 
-    title, comments = sc.sentence_caser(PMID, title, detect_threshold=0.2, caser_threshold=0.8, comments, debug=False)
+    title, comments = sc.sentence_caser(PMID, title, comments, detect_threshold=0.2, caser_threshold=0.8, debug=False)
 
     title = capitalize_words_after_colons(title)
 

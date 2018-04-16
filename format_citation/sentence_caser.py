@@ -346,7 +346,7 @@ def simple_sentence_case(title):
     title_sc = check_word_list(title_sc)
     return title
 
-def sentence_caser(PMID, title, detect_threshold = 0.2, caser_threshold = 0.8, comments, debug = False):
+def sentence_caser(PMID, title, comments, detect_threshold = 0.2, caser_threshold = 0.8, debug = False):
     # If it's all uppercase, like 28487907, covert to basic capitalize
     if title.isupper():
         if debug: print('All upper case detected.')
