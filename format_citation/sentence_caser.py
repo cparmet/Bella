@@ -215,10 +215,13 @@ def title_case_to_sentence_case(title, abstract, threshold=0.8, debug=False):
             # Because if abstract begins "BACKGROUND: Bilateral..."
             # at this point we'll have ':', 'Background'
 
-            if abstract_sentences[i][0][0].isupper():  # Note the extra [0] for first letter of string
-                abstract_sentences[i] = abstract_sentences[i][1:]
+            try:
+                if abstract_sentences[i][0][0].isupper():  # Note the extra [0] for first letter of string
+                    abstract_sentences[i] = abstract_sentences[i][1:]
+            except:
+                continue
 
-                ############
+    ############
     ## Walk through words in the Title
     ############
     # For every word in the Title
