@@ -3,7 +3,7 @@ from nltk.tokenize.moses import MosesDetokenizer
 import Entrez
 from Bio import Medline
 import pandas as pd
-# from titlecase import titlecase
+from titlecase import titlecase
 # import numpy as np
 import re
 from flask import current_app as app
@@ -447,9 +447,15 @@ def sentence_caser(PMID, title, comments, detect_threshold = 0.2, caser_threshol
     # If it's all uppercase, like 28487907, covert to basic capitalize
     if title.isupper():
         if debug: print('All upper case detected.')
-        title_sc = simple_sentence_case(title)
         comments.append("I've tried to convert the title from UPPER CASE to Sentence case. Please double check me!")
         comments.append("Original title: " + title)
+
+        # First, convert from UPPERCASE to Title Case
+        title = titlecase(title)
+        # Then let that TC title flow through to next block for Sentence Casing.
+
+        # Unused:
+        # title = simple_sentence_case(title)
 
     # Is this in sentence case?
     if is_sentence_case(title) <= detect_threshold:
@@ -468,8 +474,10 @@ def sentence_caser(PMID, title, comments, detect_threshold = 0.2, caser_threshol
             if debug: print('No real abstract. Using simple method to convert to basic sentence case.')
             title_sc = simple_sentence_case(title)
 
-        comments.append("I've tried to convert the title from Title Case to Sentence case. Please double check me!")
-        comments.append("Original title: " + title)
+        # Warn user that we made a guess, unless we already warned user about conversion from UPPER CASE.
+        if "I've tried to convert the title from UPPER CASE to Sentence case. Please double check me!" not in comments:
+            comments.append("I've tried to convert the title from Title Case to Sentence case. Please double check me!")
+            comments.append("Original title: " + title)
 
     else:
         # Already in sentence case.
