@@ -149,17 +149,34 @@ def create_word_list():
     word_list = medical_societies.append(places).append(pathogens).append(diseases)
     return word_list
 
+def replace_case_insensitive(term, title):
+    ''' Search for a term, regardless of case, and if found replace it with the casing in term.'''
+
+    # Why needed:
+    # In one instance (PMID 29773586), Sentence Caser mined the abstract to change
+    # american heart association
+    # to
+    # American heart Association (because heart was both upper and lowercase in the abstract)
+
+    # Then check_word_list didn't catch this instance, and left "heart" lowercase.
+    # Because it was only looking for the all-lowercase term, "american heart association"
+
+    # Solution from: https://stackoverflow.com/questions/919056/case-insensitive-replace
+
+    import re
+    pattern = re.compile(re.escape(term), re.IGNORECASE)
+    return pattern.sub(term, title)
+
 def check_word_list(title, debug = False):
     ## V4D: scan for terms in my word lists of medical societies, places, pathogens, and diseases
     # that should ALWAYS be capitalized.
     searches = create_word_list()
     for term in searches:
-        if term.lower() in title:
-            try:
-                title = title.replace(term.lower(), term)
-            #       print('Word list match: Term = ', term, '. title = ', title_sc)
-            except:
-                if debug: print('Word list error: Term = ', term, '. title = ', title)
+        try:
+            title = replace_case_insensitive(term, title)
+            # print('Word list match: Term = ', term, '. title = ', title_sc)
+        except:
+            if debug: print('Word list error: Term = ', term, '. title = ', title)
     return title
 
 
